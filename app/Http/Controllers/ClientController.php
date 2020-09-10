@@ -100,7 +100,7 @@ class ClientController extends Controller
                 //store response
                 $res = $result->getBody()->getContents();
                 $response = json_decode($res, TRUE);
-                return $response;
+              
                 if($response[0]['code'] == 00){
                     $rec[7] = "Successfully Registered";
                 }elseif($response[0]['code'] == 01){
