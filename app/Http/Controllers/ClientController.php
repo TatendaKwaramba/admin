@@ -63,11 +63,11 @@ class ClientController extends Controller
             if($rec[7] !== "FAIL"){
 
                 //create payload
-                $info = array([
+                $info = array(
                     "imei" => "357925071763103",
                     "admin_id" => 1,
                     "channel" => "ANDROID",
-                    "clients" => [
+                    "clients" => [[
                         "cardId" => "",
                         "clientClassOfServiceId" => [
                             "id" => 14
@@ -88,10 +88,9 @@ class ClientController extends Controller
                         ],
                         "mobile" => $rec[0],
                         "idNumber" => "04065570X07"
-                    ]
-                ]);
+                    ]]
+                );
 
-                
                 //send data
                 $result = $client->post(env('BASE_URL') .'/client_crud/add', [
                     'headers' => ['Content-type' => 'application/json'],
@@ -101,9 +100,11 @@ class ClientController extends Controller
                 //store response
                 $res = $result->getBody()->getContents();
                 $response = json_decode($res, TRUE);
-                
-                if($response[0]['code'] == 01){
+                return $response;
+                if($response[0]['code'] == 00){
                     $rec[7] = "Successfully Registered";
+                }elseif($response[0]['code'] == 01){
+                    $rec[7] = "Error 2";
                 }elseif($response[0]['code'] == 111){
                     $rec[7] = "User Already Exists";
                 }elseif($response[0]['code'] == 400){
@@ -117,6 +118,8 @@ class ClientController extends Controller
             }
 
         }
+
+        return $data;
 
         //Download CVS
         $filename = "results.csv";
@@ -143,7 +146,7 @@ class ClientController extends Controller
             $handle = fopen($filename, 'w+');
             $csv_headers = ['mobile', 'firstname', 'lastname', 'state', 'address', 'email', 'deposit', 'status'];
 
-            fputcsv($handle, $csv_headers, );
+            fputcsv($handle, $csv_headers );
         
             fclose($handle);
         
@@ -192,7 +195,7 @@ class ClientController extends Controller
         $handle = fopen($filename, 'w+');
         $csv_headers = ['mobile', 'destination', 'amount', 'status'];
 
-        fputcsv($handle, $csv_headers, );
+        fputcsv($handle, $csv_headers);
     
         fclose($handle);
     
